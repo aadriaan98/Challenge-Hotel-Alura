@@ -6,7 +6,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import ar.com.logica.login;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -62,27 +66,45 @@ public class Login extends JFrame {
 		txtUsuario.setBounds(409, 181, 234, 33);
 		contentPane.add(txtUsuario);
 		
-		JLabel lblNewLabel_1_1_1 = new JLabel("Usuário");
-		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblNewLabel_1_1_1.setBounds(409, 156, 57, 14);
-		contentPane.add(lblNewLabel_1_1_1);
+		JLabel lblUsuario = new JLabel("Usuário");
+		lblUsuario.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblUsuario.setBounds(409, 156, 57, 14);
+		contentPane.add(lblUsuario);
 		
 		txtContrasena = new JPasswordField();
 		txtContrasena.setBounds(409, 261, 234, 33);
 		contentPane.add(txtContrasena);
 		
-		JLabel lblNewLabel_1_1_1_1 = new JLabel("Contraseña");
-		lblNewLabel_1_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblNewLabel_1_1_1_1.setBounds(409, 236, 133, 14);
-		contentPane.add(lblNewLabel_1_1_1_1);
+		JLabel lblPass = new JLabel("Contraseña");
+		lblPass.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblPass.setBounds(409, 236, 133, 14);
+		contentPane.add(lblPass);
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setIcon(new ImageIcon(Login.class.getResource("/imagenes/perfil-del-usuario.png")));
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MenuUsuario usuario = new MenuUsuario();
-				usuario.setVisible(true);
-				dispose();
+				
+				login claseLogin = new login();
+				claseLogin.setUsuario(txtUsuario.getText().toString().trim());
+				claseLogin.setPass(txtContrasena.getText().toString().trim());
+				
+				
+				if(claseLogin.getUsuario().equals("")) {
+					JOptionPane.showMessageDialog(null, "debe ingresar un usuario");
+				}else if(claseLogin.getPass().equals("")) {
+					JOptionPane.showMessageDialog(null, "debe ingresar una contraseña");
+				}else {
+					if(claseLogin.iniciarSesion()){
+						JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso");
+						MenuUsuario usuario = new MenuUsuario();
+						usuario.setVisible(true);
+						dispose();
+					}else {
+						JOptionPane.showMessageDialog(null, "Error de inicio de sesion");
+					}
+				}
+				
 			}
 		});
 		btnLogin.setBounds(409, 322, 103, 33);
