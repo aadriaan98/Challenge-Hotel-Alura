@@ -7,14 +7,24 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import java.awt.Color;
 import com.toedter.calendar.JDateChooser;
+
+import factory.ConnectionFactory;
+
 import javax.swing.JComboBox;
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 
@@ -78,6 +88,19 @@ public class RegistroHuesped extends JFrame {
 		txtNacionalidad.setBounds(576, 350, 255, 33);
 		contentPane.add(txtNacionalidad);
 		
+		txtTelefono = new JTextField();
+		txtTelefono.setColumns(10);
+		txtTelefono.setBackground(Color.WHITE);
+		txtTelefono.setBounds(576, 419, 255, 33);
+		contentPane.add(txtTelefono);
+		
+		txtNreserva = new JTextField();
+		txtNreserva.setEnabled(false);
+		txtNreserva.setColumns(10);
+		txtNreserva.setBackground(Color.WHITE);
+		txtNreserva.setBounds(576, 480, 255, 33);
+		contentPane.add(txtNreserva);
+		
 		JLabel lblNewLabel_1 = new JLabel("Nombre");
 		lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		lblNewLabel_1.setBounds(578, 125, 253, 14);
@@ -88,7 +111,7 @@ public class RegistroHuesped extends JFrame {
 		lblNewLabel_1_1.setBounds(576, 194, 255, 14);
 		contentPane.add(lblNewLabel_1_1);
 		
-		JLabel lblNewLabel_1_1_1 = new JLabel("Fecha de Nascimiento");
+		JLabel lblNewLabel_1_1_1 = new JLabel("Fecha de Nacimiento");
 		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		lblNewLabel_1_1_1.setBounds(576, 256, 255, 14);
 		contentPane.add(lblNewLabel_1_1_1);
@@ -97,6 +120,16 @@ public class RegistroHuesped extends JFrame {
 		lblNewLabel_1_1_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
 		lblNewLabel_1_1_1_1.setBounds(576, 325, 255, 14);
 		contentPane.add(lblNewLabel_1_1_1_1);
+		
+		JLabel lblNewLabel_1_2 = new JLabel("Teléfono");
+		lblNewLabel_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_1_2.setBounds(578, 394, 253, 14);
+		contentPane.add(lblNewLabel_1_2);
+		
+		JLabel lblNewLabel_1_2_1 = new JLabel("Número de Reserva");
+		lblNewLabel_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_1_2_1.setBounds(578, 455, 253, 14);
+		contentPane.add(lblNewLabel_1_2_1);
 		
 		JLabel lblNewLabel = new JLabel("New label");
 		lblNewLabel.setIcon(new ImageIcon(RegistroHuesped.class.getResource("/imagenes/registro.png")));
@@ -108,13 +141,58 @@ public class RegistroHuesped extends JFrame {
 		btnCancelar.setBackground(SystemColor.menu);
 		btnCancelar.setBounds(764, 543, 54, 41);
 		contentPane.add(btnCancelar);
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				txtNombre.setText("");
+				txtApellido.setText("");
+				txtFechaN.cleanup();
+				txtNacionalidad.setSelectedIndex(0);
+				txtTelefono.setText("");	
+			}
+		});
 		
 		JButton btnGuardar = new JButton("");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Exito exito = new Exito();
-				exito.setVisible(true);
-				dispose();
+				ConnectionFactory connectionFactory = new ConnectionFactory();
+				Connection cn = null;
+				Statement st = null;
+				
+				try {
+					cn = connectionFactory.conectar();
+					
+					String nombre = txtNombre.getText().toString().trim();
+					String apellido = txtApellido.getText().toString().trim();
+					Date fechaNacimiento = txtFechaN.getDate();
+					Action nacionalidad = txtNacionalidad.getAction();	
+					String telefono = txtTelefono.getText();
+					
+					
+					String query = "INSERT INTO huespedes (Nombre, Apellido, FechaNacimiento, Nacionalidad, Telefono)"
+							+ "values('"+nombre+"', '"+apellido+"', '"+fechaNacimiento+"','"+nacionalidad+"', '"+telefono+"')";
+					st = cn.createStatement();
+					st.executeUpdate(query);
+					
+					Exito exito = new Exito();
+					exito.setVisible(true);
+					dispose();		
+					
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "Error al cargar formulario");
+					e1.printStackTrace();
+				}finally {
+					try {
+						if (st != null) {
+							st.close();
+						}if (cn != null) {
+							cn.close();
+						}
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+					
+				}
+				
 			}
 		});
 		btnGuardar.setIcon(new ImageIcon(RegistroHuesped.class.getResource("/imagenes/disquete.png")));
@@ -135,16 +213,7 @@ public class RegistroHuesped extends JFrame {
 		btnSalir.setBounds(828, 543, 54, 41);
 		contentPane.add(btnSalir);
 		
-		JLabel lblNewLabel_1_2 = new JLabel("Teléfono");
-		lblNewLabel_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblNewLabel_1_2.setBounds(578, 394, 253, 14);
-		contentPane.add(lblNewLabel_1_2);
 		
-		txtTelefono = new JTextField();
-		txtTelefono.setColumns(10);
-		txtTelefono.setBackground(Color.WHITE);
-		txtTelefono.setBounds(576, 419, 255, 33);
-		contentPane.add(txtTelefono);
 		
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(RegistroHuesped.class.getResource("/imagenes/Ha-100px.png")));
@@ -156,17 +225,6 @@ public class RegistroHuesped extends JFrame {
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel_4.setBounds(576, 74, 198, 42);
 		contentPane.add(lblNewLabel_4);
-		
-		JLabel lblNewLabel_1_2_1 = new JLabel("Número de Reserva");
-		lblNewLabel_1_2_1.setFont(new Font("Arial", Font.PLAIN, 14));
-		lblNewLabel_1_2_1.setBounds(578, 455, 253, 14);
-		contentPane.add(lblNewLabel_1_2_1);
-		
-		txtNreserva = new JTextField();
-		txtNreserva.setEnabled(false);
-		txtNreserva.setColumns(10);
-		txtNreserva.setBackground(Color.WHITE);
-		txtNreserva.setBounds(576, 480, 255, 33);
-		contentPane.add(txtNreserva);
+			
 	}
 }

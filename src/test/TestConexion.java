@@ -1,23 +1,25 @@
-package ar.com.logica;
+package test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import factory.ConnectionFactory;
+
 public class TestConexion {
 
 	public static void main(String[] args) {
 		
-		Conexion conexion = new Conexion();
+		ConnectionFactory connectionFactory = new ConnectionFactory();
 		Connection cn = null;
 		Statement st = null;
 		ResultSet rs = null;
 		
 		try {
-			cn = conexion.conectar();
+			cn = connectionFactory.conectar();
 			st = cn.createStatement();
-			rs = st.executeQuery("SELECT * FROM huespedes");
+			rs = st.executeQuery("SELECT * FROM reservas");
 			
 			while (rs.next()) {
 				

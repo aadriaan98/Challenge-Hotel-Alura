@@ -1,4 +1,4 @@
-package ar.com.logica;
+package controller;
 
 public class login {
 
