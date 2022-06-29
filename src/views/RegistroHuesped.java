@@ -79,6 +79,7 @@ public class RegistroHuesped extends JFrame {
 		contentPane.add(txtApellido);
 		
 		JDateChooser txtFechaN = new JDateChooser();
+		txtFechaN.setDateFormatString("yyyy-MM-dd");
 		txtFechaN.setBounds(576, 281, 255, 33);
 		contentPane.add(txtFechaN);
 		
@@ -163,7 +164,7 @@ public class RegistroHuesped extends JFrame {
 					
 					String nombre = txtNombre.getText().toString().trim();
 					String apellido = txtApellido.getText().toString().trim();
-					Date fechaNacimiento = txtFechaN.getDate();
+					String fechaNacimiento = ((JTextField)txtFechaN.getDateEditor().getUiComponent()).getText();;
 					Action nacionalidad = txtNacionalidad.getAction();	
 					String telefono = txtTelefono.getText();
 					
